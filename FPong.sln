@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "fpong", "fpong\fpong.fsproj", "{C554802B-7B87-4FC8-AD5C-C7E75A094C49}"
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "FPong", "FPong\FPong.fsproj", "{C554802B-7B87-4FC8-AD5C-C7E75A094C49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +15,6 @@ Global
 		{C554802B-7B87-4FC8-AD5C-C7E75A094C49}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = fpong\fpong.fsproj
+		StartupItem = FPong\FPong.fsproj
 	EndGlobalSection
 EndGlobal
