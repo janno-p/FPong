@@ -1,7 +1,10 @@
-﻿module fpong.AssemblyInfo
+﻿module FPong.AssemblyInfo
 
 open System.Reflection
 open System.Runtime.CompilerServices
+
+[<Literal>]
+let assemblyVersion = "1.0.0.0"
 
 [<AssemblyTitle("fpong")>]
 [<AssemblyDescription("")>]
@@ -10,9 +13,6 @@ open System.Runtime.CompilerServices
 [<AssemblyProduct("")>]
 [<AssemblyCopyright("janno")>]
 [<AssemblyTrademark("")>]
-[<AssemblyVersion("1.0.0.0")>]
-()
-// The assembly version has the format {Major}.{Minor}.{Build}.{Revision}
-//[<assembly: AssemblyDelaySign(false)>]
-//[<assembly: AssemblyKeyFile("")>]
+[<AssemblyVersion(assemblyVersion)>]
 
+()
