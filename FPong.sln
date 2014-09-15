@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "FPong", "FPong\FPong.fsproj", "{C554802B-7B87-4FC8-AD5C-C7E75A094C49}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{13AA09F0-CC3E-4BA1-A69F-674027BB78E7}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +18,8 @@ Global
 		{C554802B-7B87-4FC8-AD5C-C7E75A094C49}.Debug|x86.Build.0 = Debug|x86
 		{C554802B-7B87-4FC8-AD5C-C7E75A094C49}.Release|x86.ActiveCfg = Release|x86
 		{C554802B-7B87-4FC8-AD5C-C7E75A094C49}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = FPong\FPong.fsproj
