@@ -183,4 +183,4 @@ UpgradeLog*.htm
 FakesAssemblies/
 
 *.userprefs
-sfmlnet-graphics-2.dll.config
+*.dll.config
