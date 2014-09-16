@@ -1,7 +1,22 @@
 ﻿module FPong.GameUtils
 
 open SFML.Graphics
+open SFML.Window
+open System
+open System.Collections.Generic
 open System.Diagnostics
+
+type InputHandler<'Command>(window : RenderWindow, subscriber : (List<'Command> -> IDisposable list)) =
+    let mutable mouseOrigin = Vector2u(window.Size.X / 2u, window.Size.Y / 2u)
+    let state = List<'Command>()
+    let unsubscriber = subscriber state
+    member this.GetInputState() =
+        state.Clear()
+        window.DispatchEvents()
+        state |> Seq.toList
+    interface IDisposable with
+        member this.Dispose() =
+            unsubscriber |> List.iter (fun x -> x.Dispose())
 
 type GameState<'ScreenState> = {
     IsDone : bool
@@ -10,30 +25,41 @@ type GameState<'ScreenState> = {
     Window : RenderWindow
 }
 
-let GameLoop update render (state : GameState<_>) =
+type GameLoopArgs<'State, 'Command> = {
+    ProcessCommands : (GameState<'State> -> 'Command list -> GameState<'State>)
+    Update : (float32 -> GameState<'State> -> GameState<'State>)
+    Render : (GameState<'State> -> GameState<'State>)
+    SubscribeToEvents : (List<'Command> -> IDisposable list)
+    State : 'State
+    Window : RenderWindow
+}
+
+let GameLoop (args : GameLoopArgs<'State, 'Command>) =
     let timePerFrame = 1.0f / 60.0f
 
+    use inputHandler = new InputHandler<'Command>(args.Window, args.SubscribeToEvents)
+
     let rec updateAndRenderFrame state =
-        state.Window.DispatchEvents()
+        let state = inputHandler.GetInputState() |> args.ProcessCommands state
         match state.TimeSinceLastUpdate with
-        | x when x < timePerFrame -> render state
+        | x when x < timePerFrame -> args.Render state
         | _ -> { state with TimeSinceLastUpdate = state.TimeSinceLastUpdate - timePerFrame }
-               |> update timePerFrame
+               |> args.Update timePerFrame
                |> updateAndRenderFrame
 
     let timer = Stopwatch()
     timer.Start()
 
-    let rec gameLoop (state : GameState<_>) =
+    let rec gameLoop (state : GameState<'State>) =
         if not state.IsDone then
             let dt = (float32 timer.ElapsedMilliseconds) / 1000.0f
             timer.Restart()
             { state with TimeSinceLastUpdate = state.TimeSinceLastUpdate + dt }
             |> updateAndRenderFrame
             |> gameLoop
-    gameLoop state
 
-let InitGameState window state = { TimeSinceLastUpdate = 0.0f
-                                   IsDone = false
-                                   State = state
-                                   Window = window }
+    { TimeSinceLastUpdate = 0.0f
+      IsDone = false
+      State = args.State
+      Window = args.Window }
+    |> gameLoop
