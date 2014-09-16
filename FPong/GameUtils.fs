@@ -32,3 +32,8 @@ let GameLoop update render (state : GameState<_>) =
             |> updateAndRenderFrame
             |> gameLoop
     gameLoop state
+
+let InitGameState window state = { TimeSinceLastUpdate = 0.0f
+                                   IsDone = false
+                                   State = state
+                                   Window = window }
