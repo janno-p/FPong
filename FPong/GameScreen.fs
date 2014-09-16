@@ -1,13 +1,9 @@
 ﻿module FPong.GameScreen
 
+open FPong.GameUtils
 open SFML.Graphics
 open SFML.Window
 open System.Diagnostics
-
-type State = {
-    TimeSinceLastUpdate : float32
-    Running : bool
-}
 
 let run (window : RenderWindow) = async {
     //window.Closed.Add(fun _ -> window.Close())
@@ -17,43 +13,27 @@ let run (window : RenderWindow) = async {
     use font = new Font("/usr/share/fonts/truetype/freefont/FreeSans.ttf")
     use text = new SFML.Graphics.Text("welcome", font, Color=Color.White, CharacterSize=20u)
 
-    let timePerFrame = 1.0f / 60.0f
-
-    let timer = Stopwatch()
-    let timeSinceLastUpdate = ref (float32 timer.ElapsedMilliseconds)
-    timer.Start()
-
-    let update (dt : float32) (state : State) =
+    let update (dt : float32) (state : GameState<int option>) =
         if Keyboard.IsKeyPressed(Keyboard.Key.Q) then
-            { state with Running = false }
+            { state with IsDone = true }
         else
             state
 
-    let render (state : State) =
+    let render state =
         window.Clear()
         window.Draw(shape)
         window.Draw(text)
         window.Display()
         state
 
-    let rec updateAndRenderFrame (state : State) =
-        window.DispatchEvents()
-        match state.TimeSinceLastUpdate with
-        | x when x < timePerFrame -> render state
-        | _ -> { state with TimeSinceLastUpdate = state.TimeSinceLastUpdate - timePerFrame }
-               |> update timePerFrame
-               |> updateAndRenderFrame
+    let state = None : int option
 
-    let rec gameLoop (state : State) =
-        if state.Running then
-            let dt = (float32 timer.ElapsedMilliseconds) / 1000.0f
-            timer.Restart()
-            { state with TimeSinceLastUpdate = state.TimeSinceLastUpdate + dt }
-            |> updateAndRenderFrame
-            |> gameLoop
+    let gameState = {
+        TimeSinceLastUpdate = 0.0f
+        IsDone = false
+        State = state
+        Window = window
+    }
 
-    let state = { TimeSinceLastUpdate = 0.0f
-                  Running = true }
-
-    gameLoop state
+    gameState |> GameLoop update render
 }

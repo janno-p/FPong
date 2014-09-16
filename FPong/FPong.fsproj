@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="GameUtils.fs" />
     <Compile Include="GameScreen.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
