@@ -63,3 +63,16 @@ let GameLoop (args : GameLoopArgs<'State, 'Command>) =
       State = args.State
       Window = args.Window }
     |> gameLoop
+
+let CalculateViewport aspectRatio (size : Vector2u) =
+    let width = float32 size.X
+    let height = float32 size.Y
+    let ratio = width / height
+    if ratio > aspectRatio then
+        let expectedWidth = height * aspectRatio
+        let dw = expectedWidth / width
+        FloatRect((1.0f - dw) / 2.0f, 0.0f, dw, 1.0f)
+    else
+        let expectedHeight = width / aspectRatio
+        let dh = expectedHeight / height
+        FloatRect(0.0f, (1.0f - dh) / 2.0f, 1.0f, dh)
