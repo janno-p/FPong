@@ -5,6 +5,16 @@ open SFML.Window
 open System
 open System.Collections.Generic
 open System.Diagnostics
+open System.IO
+open System.Reflection
+
+let (@@) path1 path2 = Path.Combine(path1, path2)
+
+let ContentDir =
+    let assembly = Assembly.GetExecutingAssembly()
+    Path.GetDirectoryName(assembly.Location) @@ "Content"
+
+let FontPath name = ContentDir @@ "Fonts" @@ name
 
 type InputHandler<'Command>(window : RenderWindow, subscriber : (List<'Command> -> IDisposable list)) =
     let mutable mouseOrigin = Vector2u(window.Size.X / 2u, window.Size.Y / 2u)

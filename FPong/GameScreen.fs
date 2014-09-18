@@ -16,7 +16,7 @@ let run (window : RenderWindow) = async {
 
     let halfSize = Vector2f(200.0f, 150.0f)
 
-    use font = new Font("/usr/share/fonts/truetype/freefont/FreeSans.ttf")
+    use font = new Font(FontPath "VCR_OSD_MONO.ttf")
     use playerScore = new Text("0", font, Color=Color.White, CharacterSize=20u, Position=Vector2f(-50.0f, 20.0f - halfSize.Y))
     use computerScore = new Text("0", font, Color=Color.White, CharacterSize=20u, Position=Vector2f(50.0f, 20.0f - halfSize.Y))
 
@@ -31,10 +31,10 @@ let run (window : RenderWindow) = async {
     use view = new View(Vector2f(), halfSize * 2.0f)
     view.Viewport <- CalculateViewport' window.Size
 
-    let lineWidth = 2.0f
+    let lineWidth = 4.0f
 
-    use background = new RectangleShape(Vector2f(halfSize.X - lineWidth, halfSize.Y - lineWidth) * 2.0f)
-    background.Position <- Vector2f(lineWidth - halfSize.X, lineWidth - halfSize.Y)
+    use background = new RectangleShape(Vector2f(halfSize.X, halfSize.Y - lineWidth) * 2.0f)
+    background.Position <- Vector2f(-halfSize.X, lineWidth - halfSize.Y)
     background.FillColor <- Color.Transparent
     background.OutlineColor <- Color.White
     background.OutlineThickness <- lineWidth
