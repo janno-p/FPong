@@ -42,7 +42,9 @@ let run (window : RenderWindow) = async {
     use playerPaddle = new RectangleShape(paddleSize, Position=Vector2f(-halfSize.X + 10.0f, 0.0f), FillColor=Color.Green, Origin=(paddleSize / 2.0f))
     use computerPaddle = new RectangleShape(paddleSize, Position=Vector2f(halfSize.X - 10.0f, 0.0f), FillColor=Color.Green, Origin=(paddleSize / 2.0f))
 
-    let middleLine = [| Vertex(Vector2f(0.0f, -halfSize.Y)); Vertex(Vector2f(0.0f, halfSize.Y)) |]
+    use middleLine = new VertexArray(PrimitiveType.Lines)
+    middleLine.Append(Vertex(Vector2f(0.0f, -halfSize.Y)))
+    middleLine.Append(Vertex(Vector2f(0.0f, halfSize.Y)))
 
     let subscribeToEvents (state : List<Command>) = [
         window.KeyPressed
@@ -67,7 +69,7 @@ let run (window : RenderWindow) = async {
         window.Clear()
         window.SetView(view)
         window.Draw(background)
-        window.Draw(middleLine, PrimitiveType.Lines)
+        window.Draw(middleLine)
         window.Draw(playerScore)
         window.Draw(computerScore)
         window.Draw(playerPaddle)
