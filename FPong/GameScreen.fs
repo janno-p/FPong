@@ -12,9 +12,11 @@ type Command =
     | Quit
 
 let run (window : RenderWindow) = async {
-    let CalculateViewport' = CalculateViewport (4.0f / 3.0f)
+    let aspectRatio = 4.0f / 3.0f
 
-    let halfSize = Vector2f(200.0f, 150.0f)
+    let CalculateViewport' = CalculateViewport aspectRatio
+
+    let halfSize = Vector2f(aspectRatio * 150.0f, 150.0f)
 
     use font = new Font(FontPath "VCR_OSD_MONO.ttf")
     use playerScore = new Text("0", font, Color=Color.White, CharacterSize=20u, Position=Vector2f(-50.0f, 20.0f - halfSize.Y))
