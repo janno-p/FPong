@@ -17,7 +17,6 @@ let ContentDir =
 let FontPath name = ContentDir @@ "Fonts" @@ name
 
 type InputHandler<'Command>(window : RenderWindow, subscriber : (List<'Command> -> IDisposable list)) =
-    let mutable mouseOrigin = Vector2u(window.Size.X / 2u, window.Size.Y / 2u)
     let state = List<'Command>()
     let unsubscriber = subscriber state
     member this.GetInputState() =

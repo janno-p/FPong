@@ -6,9 +6,11 @@ open SFML.Window
 open System.Collections.Generic
 open System.Diagnostics
 
-type State = { Score : uint32 * uint32 }
+type State = { Position : float32
+               Score : uint32 * uint32 }
 
 type Command =
+    | MoveToPosition of float32
     | Quit
 
 let run (window : RenderWindow) = async {
@@ -41,12 +43,18 @@ let run (window : RenderWindow) = async {
     background.OutlineColor <- Color.White
     background.OutlineThickness <- lineWidth
 
-    use playerPaddle = new RectangleShape(paddleSize, Position=Vector2f(-halfSize.X + 10.0f, 0.0f), FillColor=Color.Green, Origin=(paddleSize / 2.0f))
-    use computerPaddle = new RectangleShape(paddleSize, Position=Vector2f(halfSize.X - 10.0f, 0.0f), FillColor=Color.Green, Origin=(paddleSize / 2.0f))
+    use playerPaddle = new RectangleShape(paddleSize, Position=Vector2f(halfSize.X - 10.0f, 0.0f), FillColor=Color.Green, Origin=(paddleSize / 2.0f))
+    use computerPaddle = new RectangleShape(paddleSize, Position=Vector2f(-halfSize.X + 10.0f, 0.0f), FillColor=Color.Green, Origin=(paddleSize / 2.0f))
 
     use middleLine = new VertexArray(PrimitiveType.Lines)
     middleLine.Append(Vertex(Vector2f(0.0f, -halfSize.Y)))
     middleLine.Append(Vertex(Vector2f(0.0f, halfSize.Y)))
+
+    let windowCenter = window.Size / 2u
+    let mouseOrigin = Vector2i(int windowCenter.X, int windowCenter.Y)
+    Mouse.SetPosition(mouseOrigin, window)
+
+    window.SetMouseCursorVisible(false)
 
     let subscribeToEvents (state : List<Command>) = [
         window.KeyPressed
@@ -57,14 +65,20 @@ let run (window : RenderWindow) = async {
 
         window.Resized
         |> Observable.subscribe (fun e -> view.Viewport <- CalculateViewport' (Vector2u(e.Width, e.Height)))
+
+        window.MouseMoved
+        |> Observable.subscribe (fun e -> let v = window.MapPixelToCoords(Vector2i(e.X, e.Y), view)
+                                          MoveToPosition v.Y |> state.Add)
     ]
 
     let rec processCommands (state : GameState<State>) commands =
         match commands with
         | [] -> state
+        | MoveToPosition pos :: xs -> processCommands { state with State = { state.State with Position = pos } } xs
         | Quit :: xs -> processCommands { state with IsDone = true } xs
 
-    let update (dt : float32) state =
+    let update (dt : float32) (state : GameState<State>) =
+        playerPaddle.Position <- Vector2f(playerPaddle.Position.X, state.State.Position)
         state
 
     let render state =
@@ -83,7 +97,7 @@ let run (window : RenderWindow) = async {
       Update = update
       Render = render
       SubscribeToEvents = subscribeToEvents
-      State = { Score = (0u, 0u) }
+      State = { Position = 0.0f; Score = (0u, 0u) }
       Window = window }
     |> GameLoop
 }
