@@ -78,7 +78,9 @@ let run (window : RenderWindow) = async {
         | Quit :: xs -> processCommands { state with IsDone = true } xs
 
     let update (dt : float32) (state : GameState<State>) =
-        playerPaddle.Position <- Vector2f(playerPaddle.Position.X, state.State.Position)
+        let offset = lineWidth + playerPaddle.Size.Y / 2.0f
+        let pos = max (min state.State.Position (halfSize.Y - offset)) (-halfSize.Y + offset)
+        playerPaddle.Position <- Vector2f(playerPaddle.Position.X, pos)
         state
 
     let render state =
